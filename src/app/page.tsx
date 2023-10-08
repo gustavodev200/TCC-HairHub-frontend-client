@@ -1,95 +1,119 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
 
-export default function Home() {
+import React, { useEffect, useState } from "react";
+import { Button, Checkbox, Form, Input } from "antd";
+import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import { LoginComponent } from "@/components/LoginComponent";
+import styled from "styled-components";
+import { ErrorMessages } from "@/@types/messages";
+import { useRouter } from "next/navigation";
+import { useUser } from "@/stores/useUser";
+import { authService } from "@/services/auth";
+
+export default function Page() {
+  const { push } = useRouter();
+  const { accessToken, setAccessToken } = useUser();
+  const [isLoading, setIsLoading] = useState(false);
+
+  interface FormValues {
+    email: string;
+    password: string;
+  }
+
+  const onFinish = (values: unknown) => {
+    const formValues = values as FormValues;
+    setIsLoading(true);
+
+    authService
+      .login(formValues.email, formValues.password)
+      .then((token) => {
+        setAccessToken(token);
+        push("/client/home");
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  useEffect(() => {
+    if (accessToken) {
+      push("/client/home");
+    }
+  }, [accessToken]); // eslint-disable-line
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+    <LoginComponent>
+      <FormConatainer
+        name="basic"
+        layout="vertical"
+        onFinish={onFinish}
+        disabled={isLoading}
+        autoComplete="off"
+        size="large"
+      >
+        <Title>
+          <h2>ENTRAR</h2>
+        </Title>
+        <Form.Item
+          label="E-mail"
+          name="email"
+          rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          <Input
+            placeholder="E-mail"
+            prefix={<MailOutlined style={{ color: "#9a9a9a" }} />}
+          />
+        </Form.Item>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Form.Item
+          label="Senha"
+          name="password"
+          rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
         >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+          <InputContent
+            placeholder="Sua senha"
+            prefix={<LockOutlined style={{ color: "#9a9a9a" }} />}
+          />
+          {/* <Link style={{ color: "#fff " }} href="/dashboard">
+            Esqueci minha senha?
+          </Link> */}
+        </Form.Item>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+        <Form.Item name="remember" valuePropName="checked">
+          <Checkbox>Lembrar-me?</Checkbox>
+        </Form.Item>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+        <Form.Item>
+          <ButtonSubmit type="primary" htmlType="submit">
+            {isLoading ? "Carregando..." : "ENTRAR"}
+          </ButtonSubmit>
+        </Form.Item>
+      </FormConatainer>
+    </LoginComponent>
+  );
 }
+
+const ButtonSubmit = styled(Button)`
+  width: 100%;
+  background-color: #c1820b;
+`;
+
+const FormConatainer = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  label {
+    color: #fff !important;
+  }
+`;
+
+const InputContent = styled(Input.Password)`
+  width: 100% !important;
+`;
+
+const Title = styled.div`
+  h2 {
+    font-size: 35px;
+    font-weight: bold;
+    color: #fff;
+  }
+`;
