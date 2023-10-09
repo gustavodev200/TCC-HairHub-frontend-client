@@ -1,33 +1,64 @@
 "use client";
 
 import { serviceApi } from "@/services/service";
-import { BarberCard } from "../components/BarberCard";
 import ImageSlider from "../components/ImageSlider";
 import { ServiceCard } from "../components/ServiceCard";
-
 import "@/styles/LoadingSmall.css";
 import * as C from "./styles";
-
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { IService } from "@/@types/service";
 import FeedbackClientsSlider from "../components/FeedbackClientsSlider";
-import { Footer } from "antd/es/layout/layout";
+import FooterClient from "../components/FooterClient";
+import { ScheduleOutputDTO } from "@/@types/schedules";
+import { ModalSchedule } from "../components/ModalSchedule";
+import { useState } from "react";
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [scheduleToEdit, setcheduleToEdit] = useState<ScheduleOutputDTO>();
+  const [showModalSchedule, setShowModalSchedule] = useState(false);
+  const [selectedConsumeScheduleId, setSelectedConsumeScheduleId] =
+    useState<string>();
+  const [showModalConsumeSchedule, setShowModalConsumeSchedule] =
+    useState(false);
 
   const { data, isLoading } = useQuery(["services"], {
     queryFn: () => serviceApi.getServicesOnly(),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["services"]);
-    },
   });
+
+  const handleOpenModalSchedule = (schedule?: ScheduleOutputDTO) => {
+    if (schedule) {
+      setcheduleToEdit(schedule);
+    }
+
+    setShowModalSchedule(true);
+  };
+
+  const handleOpenModalScheduleService = (id?: string) => {
+    if (id) {
+      setSelectedConsumeScheduleId(id);
+    }
+
+    setShowModalConsumeSchedule(true);
+  };
+
+  const handleCloseModalSchedule = () => {
+    setShowModalSchedule(false), setShowModalConsumeSchedule(false);
+
+    if (scheduleToEdit) {
+      setcheduleToEdit(undefined);
+    }
+  };
 
   return (
     <>
+      <ModalSchedule
+        open={showModalSchedule}
+        scheduleToEdit={scheduleToEdit}
+        onClose={handleCloseModalSchedule}
+      />
       <C.Container>
         <C.SliderImageContainer>
-          {/* <C.Title>Novidades e Destaques:</C.Title> */}
           <ImageSlider />
         </C.SliderImageContainer>
 
@@ -57,9 +88,7 @@ export default function Home() {
           </div>
         </C.SelectedServiceContainer>
       </C.Container>
-      <Footer style={{ textAlign: "center" }}>
-        Hair Hub Barbershop ©2023 Created by Gustavo Lage
-      </Footer>
+      <FooterClient />
     </>
   );
 }

@@ -1,3 +1,6 @@
+import { ScheduleOutputDTO } from "@/@types/schedules";
+import { ModalSchedule } from "./components/ModalSchedule";
+
 export default function Page() {
   return (
     <>

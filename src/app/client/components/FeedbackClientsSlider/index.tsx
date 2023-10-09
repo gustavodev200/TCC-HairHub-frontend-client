@@ -24,6 +24,17 @@ const FeedbackClientsSlider = () => {
         pagination={{
           clickable: true,
         }}
+        breakpoints={{
+          0: {
+            slidesPerView: 1,
+          },
+          768: {
+            slidesPerView: 2,
+          },
+          1024: {
+            slidesPerView: 3,
+          },
+        }}
         navigation={true}
         modules={[Pagination, Navigation]}
         className="mySwiper"

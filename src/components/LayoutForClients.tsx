@@ -1,4 +1,6 @@
-import React, { ReactNode, useState } from "react";
+"use client";
+
+import React, { ReactNode, useEffect, useState } from "react";
 import { Layout, Menu, Button, Drawer, Row, Col } from "antd";
 import Image from "next/image";
 import styled from "styled-components";
@@ -11,12 +13,24 @@ import {
   MenuOutlined,
   HeartOutlined,
 } from "@ant-design/icons";
+import { useUser } from "@/stores/useUser";
 import { useRouter } from "next/navigation";
 
 const LayoutForClients = ({ children }: { children: ReactNode }) => {
   const [visible, setVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const { logout, accessToken } = useUser();
   const router = useRouter();
+
+  useEffect(() => {
+    if (
+      accessToken === null ||
+      accessToken === undefined ||
+      accessToken === ""
+    ) {
+      router.push("/");
+    }
+  }, [accessToken]);
 
   const showDrawer = () => {
     setVisible(true);
@@ -66,15 +80,6 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               >
                 Agendamentos
               </Menu.Item>
-
-              <Menu.Item
-                key="3"
-                icon={<HeartOutlined />}
-                onClick={() => router.push("/client/favorites")}
-              >
-                Favoritos
-              </Menu.Item>
-
               <Menu.Item
                 key="4"
                 icon={<SettingOutlined />}
@@ -84,7 +89,7 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               </Menu.Item>
 
               <Menu.Item key="5">
-                <Button>Sair</Button>
+                <Button onClick={logout}>Sair</Button>
               </Menu.Item>
             </Menu>
           </Col>
@@ -100,7 +105,7 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
           placement="right"
           // onClick={onClose}
           onClose={onClose}
-          visible={visible}
+          open={visible}
         >
           <Menu mode="vertical" defaultSelectedKeys={["1"]}>
             <Menu.Item
@@ -120,14 +125,6 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
             </Menu.Item>
 
             <Menu.Item
-              key="3"
-              icon={<HeartOutlined />}
-              onClick={() => router.push("/client/favorites")}
-            >
-              Favoritos
-            </Menu.Item>
-
-            <Menu.Item
               key="4"
               icon={<SettingOutlined />}
               onClick={() => router.push("/client/profile")}
@@ -135,7 +132,9 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               Meu Perfil
             </Menu.Item>
             <Menu.Item key="5">
-              <Button type="primary">Sair</Button>
+              <Button onClick={logout} type="primary">
+                Sair
+              </Button>
             </Menu.Item>
           </Menu>
         </Drawer>

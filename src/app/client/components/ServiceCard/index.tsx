@@ -5,10 +5,32 @@ import * as C from "./styles";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { IService } from "@/@types/service";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
-import { SchedulingModal } from "../SchedulingModal";
 import { useState } from "react";
+import { ScheduleOutputDTO } from "@/@types/schedules";
+import { ModalSchedule } from "../ModalSchedule";
 
-export const ServiceCard = ({ service }: { service: IService }) => {
+interface ServiceCardProps {
+  service: IService;
+}
+
+export const ServiceCard = ({ service }: ServiceCardProps) => {
+  const [scheduleToEdit, setcheduleToEdit] = useState<ScheduleOutputDTO>();
+  const [showModalSchedule, setShowModalSchedule] = useState(false);
+
+  const handleOpenModalSchedule = (service?: ScheduleOutputDTO) => {
+    if (service) {
+      setcheduleToEdit(service);
+    }
+
+    setShowModalSchedule(true);
+  };
+  const handleCloseModalSchedule = () => {
+    setShowModalSchedule(false);
+
+    if (scheduleToEdit) {
+      setcheduleToEdit(undefined);
+    }
+  };
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -20,6 +42,11 @@ export const ServiceCard = ({ service }: { service: IService }) => {
   };
   return (
     <>
+      <ModalSchedule
+        open={showModalSchedule}
+        scheduleToEdit={scheduleToEdit}
+        onClose={handleCloseModalSchedule}
+      />
       <C.Container>
         <C.ContainerOne>
           <C.ImageContent>
@@ -48,10 +75,11 @@ export const ServiceCard = ({ service }: { service: IService }) => {
         </C.ContainerOne>
 
         <C.ButtonContainer>
-          <C.ButtonContent onClick={showModal}>AGENDAR</C.ButtonContent>
+          <C.ButtonContent onClick={() => handleOpenModalSchedule()}>
+            AGENDAR
+          </C.ButtonContent>
         </C.ButtonContainer>
       </C.Container>
-      <SchedulingModal isModalOpen={isModalOpen} handleCancel={handleCancel} />
     </>
   );
 };
