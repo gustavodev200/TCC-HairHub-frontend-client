@@ -2,10 +2,16 @@
 
 import { Button, Image, Space } from "antd";
 import * as C from "./styles";
+import { formatCurrency } from "@/helpers/utils/formatCurrency";
+import { ScheduleOutputDTO } from "@/@types/schedules";
 
-interface backgroudSelectedProps {}
-
-export const MySchedulesCard = ({}: backgroudSelectedProps) => {
+export const MySchedulesCard = ({
+  key,
+  schedule,
+}: {
+  key: string;
+  schedule: ScheduleOutputDTO;
+}) => {
   return (
     <C.Container>
       <C.ContentOneCard>
@@ -22,35 +28,48 @@ export const MySchedulesCard = ({}: backgroudSelectedProps) => {
 
           <C.InfoNameBarber>
             <span>PROFISSIONAL:</span>
-            <h5>Dom Juan</h5>
+            <h5>{schedule.employee.name}</h5>
           </C.InfoNameBarber>
         </C.ImageContent>
         <C.ScheduledContent>
           <C.ScheduledContentDay>
             <span>AGENDADO PARA:</span>
-            <span>08/08/2022</span>
+            <span>{schedule.start_date_time}</span>
           </C.ScheduledContentDay>
           <C.ScheduledContentHours>
             <span>HORÁRIO:</span>
-            <span>13:00</span>
+            <span>{schedule.start_date_time}</span>
           </C.ScheduledContentHours>
         </C.ScheduledContent>
       </C.ContentOneCard>
 
       <C.ContentTwoCard>
-        <C.ScheduledContentService>
-          <span>SERVIÇO:</span>
-          <h6>Corte de Cabelo</h6>
-        </C.ScheduledContentService>
+        {schedule.services?.map((item) => (
+          <>
+            <C.ScheduledContentService>
+              <span>SERVIÇO:</span>
+              <h6>{item.name}</h6>
+            </C.ScheduledContentService>
 
-        <C.ScheduledContentCurrency>
-          <span>VALOR:</span>
-          <span>R$ 25,00</span>
-        </C.ScheduledContentCurrency>
+            <C.ScheduledContentCurrency>
+              <span>VALOR:</span>
+              <span>{formatCurrency(item.price as number)}</span>
+            </C.ScheduledContentCurrency>
+          </>
+        ))}
       </C.ContentTwoCard>
 
       <C.ButtonContent>
-        <C.ButtonStyle type="primary">EDITAR</C.ButtonStyle>
+        <C.ButtonStyle type="primary" color="#c1820b">
+          EDITAR
+        </C.ButtonStyle>
+
+        <C.ButtonStyle type="primary" color="#3498DB">
+          CONFIRMAR
+        </C.ButtonStyle>
+        <C.ButtonStyle type="primary" color="#E74C3C">
+          CANCELAR
+        </C.ButtonStyle>
       </C.ButtonContent>
     </C.Container>
   );

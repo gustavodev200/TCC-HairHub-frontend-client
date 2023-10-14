@@ -1,6 +1,7 @@
 import { AddressInputDTO } from "./address";
 import { GenericStatus } from "./genericStatus";
 import { AssignmentType } from "./role";
+import { ScheduleOutputDTO } from "./schedules";
 
 export interface ClientInputDTO {
   name: string;
@@ -15,4 +16,5 @@ export interface ClientInputDTO {
 export interface Client extends ClientInputDTO {
   id?: string;
   status: GenericStatus;
+  schedules: ScheduleOutputDTO[];
 }

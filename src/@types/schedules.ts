@@ -3,6 +3,8 @@ import { ScheduleStatus } from "./scheduleStatus";
 export interface ScheduleServiceDTO {
   id: string;
   name: string;
+  price?: number;
+  time?: number;
 }
 
 export interface ScheduleEmployeeDTO {

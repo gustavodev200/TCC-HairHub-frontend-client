@@ -26,7 +26,11 @@ import { useEffect, useState } from "react";
 
 import styled from "styled-components";
 import isBetween from "dayjs/plugin/isBetween";
-import { IService } from "@/@types/service";
+
+import { getCookie } from "cookies-next";
+import jwtDecode from "jwt-decode";
+import { Token } from "@/@types/token";
+
 dayjs.extend(isBetween);
 
 interface ModalProps {
@@ -40,11 +44,13 @@ export const ModalSchedule: React.FC<ModalProps> = ({
   open,
   onClose,
 }) => {
+  const [tokenName, setTokenName] = useState<Token>({} as Token);
   const [selected, setSelected] = useState("");
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
   const [form] = Form.useForm();
   const queryClient = useQueryClient();
+  const { Option } = Select;
 
   const { resetFields, setFieldsValue, validateFields, setFieldValue } = form;
   const serviceWatch = Form.useWatch("services", {
@@ -204,6 +210,18 @@ export const ModalSchedule: React.FC<ModalProps> = ({
     }
   }, [serviceWatch, startDateTimeWatch]);
 
+  useEffect(() => {
+    const accessToken = getCookie("@hairhub");
+
+    if (!accessToken) {
+      return;
+    }
+
+    const decodedToken: Token = jwtDecode(accessToken);
+
+    setTokenName(decodedToken);
+  }, []);
+
   return (
     <ModalWrapper
       centered
@@ -285,20 +303,16 @@ export const ModalSchedule: React.FC<ModalProps> = ({
             label="Cliente"
             name="client"
             style={{ width: "100%" }}
+            initialValue={tokenName.name}
             rules={[{ required: true, message: "Campo Obrigatório!" }]}
           >
             <Select
-              placeholder="Selecione um cliente"
-              // defaultValue="Selecione um barbeiro"
+              placeholder="Selecione um barbeiro"
               optionFilterProp="label"
-              filterOption={(input: string, option: any) =>
-                option.label.toLowerCase().includes(input.toLowerCase())
-              }
-              options={dataClients?.map((item) => ({
-                value: item.id,
-                label: item.name,
-              }))}
-            />
+              // onChange={(value) => handleSelectChange(value)}
+            >
+              <Option value={tokenName.sub}>{tokenName.name}</Option>
+            </Select>
           </Form.Item>
 
           <Form.Item

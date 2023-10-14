@@ -46,7 +46,14 @@ async function changeStatus(
   ).then((res) => res.data);
 }
 
+async function getScheduleById(id: string): Promise<ScheduleOutputDTO[]> {
+  return Api.get(`${baseUrl}/${id}`, { headers: { authHeader: true } }).then(
+    (res) => res.data
+  );
+}
+
 export const scheduleService = {
+  getScheduleById,
   getPaginated,
   create,
   update,

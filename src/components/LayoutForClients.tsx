@@ -13,24 +13,30 @@ import {
   MenuOutlined,
   HeartOutlined,
 } from "@ant-design/icons";
-import { useUser } from "@/stores/useUser";
+
 import { useRouter } from "next/navigation";
+import { deleteCookie, getCookie } from "cookies-next";
 
 const LayoutForClients = ({ children }: { children: ReactNode }) => {
   const [visible, setVisible] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
-  const { logout, accessToken } = useUser();
   const router = useRouter();
 
+  const handleLogout = () => {
+    // Remove o cookie
+    deleteCookie("@hairhub");
+
+    // Redireciona para a página de login ou qualquer outra página desejada
+    router.push("/");
+  };
+
   useEffect(() => {
-    if (
-      accessToken === null ||
-      accessToken === undefined ||
-      accessToken === ""
-    ) {
+    const accessToken = getCookie("@hairhub");
+
+    if (!accessToken) {
       router.push("/");
     }
-  }, [accessToken]);
+  }, []);
 
   const showDrawer = () => {
     setVisible(true);
@@ -89,7 +95,7 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               </Menu.Item>
 
               <Menu.Item key="5">
-                <Button onClick={logout}>Sair</Button>
+                <Button onClick={handleLogout}>Sair</Button>
               </Menu.Item>
             </Menu>
           </Col>
@@ -132,7 +138,7 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               Meu Perfil
             </Menu.Item>
             <Menu.Item key="5">
-              <Button onClick={logout} type="primary">
+              <Button onClick={handleLogout} type="primary">
                 Sair
               </Button>
             </Menu.Item>

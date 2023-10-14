@@ -210,6 +210,7 @@ export const ButtonContent = styled.div`
   width: 100%;
   display: flex;
   justify-content: end;
+  gap: 10px;
 `;
 
 export const ButtonStyle = styled(Button)`
@@ -217,7 +218,7 @@ export const ButtonStyle = styled(Button)`
   font-weight: bold;
   font-size: 16px;
   align-items: center;
-  background-color: #c1820b;
+  background-color: ${({ color }) => color};
   padding: 20px 30px;
 
   @media (max-width: 568px) {
