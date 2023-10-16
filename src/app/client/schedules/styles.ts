@@ -8,12 +8,12 @@ export const Container = styled.div`
 
   @media (max-width: 1750px) {
     padding: 85px 32px;
-    height: 100%;
+    height: 100vh;
   }
 
   @media (max-width: 568px) {
     padding: 85px 8px;
-    height: 100%;
+    height: 100vh;
   }
 `;
 
@@ -43,4 +43,12 @@ export const MySchedulesConatainer = styled.div`
   @media (max-width: 1000px) {
     grid-template-columns: repeat(1, 1fr);
   }
+`;
+
+export const MessageScheduleNotFound = styled.span`
+  color: #c6c6c6;
+  font-size: 20px;
+
+  width: 100%;
+  justify-content: center;
 `;

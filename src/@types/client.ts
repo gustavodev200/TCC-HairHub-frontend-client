@@ -16,5 +16,5 @@ export interface ClientInputDTO {
 export interface Client extends ClientInputDTO {
   id?: string;
   status: GenericStatus;
-  schedules: ScheduleOutputDTO[];
+  scheduling: ScheduleOutputDTO[];
 }

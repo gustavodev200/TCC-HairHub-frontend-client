@@ -31,12 +31,16 @@ import { getCookie } from "cookies-next";
 import jwtDecode from "jwt-decode";
 import { Token } from "@/@types/token";
 
+import { Employee } from "@/@types/employee";
+import AvailableHoursBarber from "../AvailableHoursBarber";
+
 dayjs.extend(isBetween);
 
 interface ModalProps {
   scheduleToEdit?: ScheduleOutputDTO;
   open: boolean;
   onClose: () => void;
+  employeeInfo?: Employee;
 }
 
 export const ModalSchedule: React.FC<ModalProps> = ({
@@ -44,6 +48,10 @@ export const ModalSchedule: React.FC<ModalProps> = ({
   open,
   onClose,
 }) => {
+  const [startDateTime, setStartDateTime] = useState<string[]>([]);
+  const [endDateTime, setEndDateTime] = useState<string[]>([]);
+  const [employeeInfo, setEmployeeInfo] = useState<Employee | null>(null);
+
   const [tokenName, setTokenName] = useState<Token>({} as Token);
   const [selected, setSelected] = useState("");
   const [dayOfWeek, setDayOfWeek] = useState<number[]>([]);
@@ -59,6 +67,11 @@ export const ModalSchedule: React.FC<ModalProps> = ({
   });
 
   const startDateTimeWatch = Form.useWatch("start_date_time", {
+    form,
+    preserve: true,
+  });
+
+  const barberWatch = Form.useWatch("employee", {
     form,
     preserve: true,
   });
@@ -84,7 +97,8 @@ export const ModalSchedule: React.FC<ModalProps> = ({
   const createSchedule = useMutation({
     mutationFn: (data: ScheduleOutputDTO) => scheduleService.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["schedulings"]);
+      queryClient.invalidateQueries(["schedulings"]),
+        queryClient.invalidateQueries(["clients"]);
     },
   });
 
@@ -92,7 +106,8 @@ export const ModalSchedule: React.FC<ModalProps> = ({
     mutationFn: (data: SchedulesUpdateParamsDTO) =>
       scheduleService.update(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["schedulings"]);
+      queryClient.invalidateQueries(["schedulings"]),
+        queryClient.invalidateQueries(["clients"]);
     },
   });
 
@@ -208,6 +223,7 @@ export const ModalSchedule: React.FC<ModalProps> = ({
     } else {
       setFieldValue("end_date_time", null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serviceWatch, startDateTimeWatch]);
 
   useEffect(() => {
@@ -221,6 +237,29 @@ export const ModalSchedule: React.FC<ModalProps> = ({
 
     setTokenName(decodedToken);
   }, []);
+
+  useEffect(() => {
+    const barberWatchArray = Array.isArray(barberWatch)
+      ? barberWatch
+      : [barberWatch];
+
+    barberWatchArray.forEach((selectedEmployee: string) => {
+      const employee = data?.find((item) => item.id === selectedEmployee);
+      if (employee) {
+        setStartDateTime(
+          employee.shifts.map((shift) =>
+            dayjs(shift.start_time).format("HH:mm")
+          )
+        );
+
+        setEndDateTime(
+          employee.shifts.map((shift) => dayjs(shift.end_time).format("HH:mm"))
+        );
+
+        setEmployeeInfo(employee);
+      }
+    });
+  }, [barberWatch]);
 
   return (
     <ModalWrapper
@@ -245,7 +284,7 @@ export const ModalSchedule: React.FC<ModalProps> = ({
           loading={createSchedule.isLoading || editSchedule.isLoading}
           onClick={handleSubmit}
         >
-          Agendar
+          Salvar
         </ButtonModal>,
       ]}
     >
@@ -280,6 +319,8 @@ export const ModalSchedule: React.FC<ModalProps> = ({
               }))}
             />
           </Form.Item>
+
+          <AvailableHoursBarber employeeInfo={employeeInfo as Employee} />
 
           <Form.Item
             required

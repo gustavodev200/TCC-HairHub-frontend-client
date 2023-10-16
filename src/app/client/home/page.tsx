@@ -12,9 +12,11 @@ import FooterClient from "../components/FooterClient";
 import { ScheduleOutputDTO } from "@/@types/schedules";
 import { ModalSchedule } from "../components/ModalSchedule";
 import { useState } from "react";
+import { employeeService } from "@/services/employee";
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>();
   const [scheduleToEdit, setcheduleToEdit] = useState<ScheduleOutputDTO>();
   const [showModalSchedule, setShowModalSchedule] = useState(false);
   const [selectedConsumeScheduleId, setSelectedConsumeScheduleId] =
@@ -25,6 +27,13 @@ export default function Home() {
   const { data, isLoading } = useQuery(["services"], {
     queryFn: () => serviceApi.getServicesOnly(),
   });
+
+  const { data: dataEmployee, isLoading: isLoadingEmployee } = useQuery(
+    ["employee"],
+    {
+      queryFn: () => employeeService.getOnlyBarbers(),
+    }
+  );
 
   const handleOpenModalSchedule = (schedule?: ScheduleOutputDTO) => {
     if (schedule) {
@@ -37,6 +46,7 @@ export default function Home() {
   const handleOpenModalScheduleService = (id?: string) => {
     if (id) {
       setSelectedConsumeScheduleId(id);
+      setSelectedEmployeeId(id);
     }
 
     setShowModalConsumeSchedule(true);
@@ -56,6 +66,9 @@ export default function Home() {
         open={showModalSchedule}
         scheduleToEdit={scheduleToEdit}
         onClose={handleCloseModalSchedule}
+        employeeInfo={dataEmployee?.find(
+          (employee) => employee.id === selectedEmployeeId
+        )}
       />
       <C.Container>
         <C.SliderImageContainer>
