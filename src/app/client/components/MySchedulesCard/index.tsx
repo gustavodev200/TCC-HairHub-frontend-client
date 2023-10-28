@@ -13,10 +13,10 @@ import { scheduleService } from "@/services/schedule";
 
 export const MySchedulesCard = ({
   schedule,
-}: // onEdit,
-{
+  onEdit,
+}: {
   schedule: ScheduleOutputDTO;
-  // onEdit: (schedule?: ScheduleOutputDTO) => void;
+  onEdit: (schedule: ScheduleOutputDTO) => void;
 }) => {
   const queryClient = useQueryClient();
 
@@ -77,7 +77,7 @@ export const MySchedulesCard = ({
 
         <C.ButtonContent>
           <C.ButtonStyle
-            // onClick={() => onEdit(schedule)}
+            onClick={() => onEdit(schedule)}
             type="primary"
             color="#c1820b"
           >

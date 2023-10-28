@@ -1,34 +1,32 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import FooterClient from "../components/FooterClient";
 import * as C from "./styles";
-import { scheduleService } from "@/services/schedule";
-import { getCookie } from "cookies-next";
-import { Token } from "@/@types/token";
-import jwtDecode from "jwt-decode";
 import { SpinColor } from "../home/styles";
 import { clientService } from "@/services/client";
 import { MySchedulesCard } from "../components/MySchedulesCard";
 import { ScheduleOutputDTO } from "@/@types/schedules";
 import { ModalSchedule } from "../components/ModalSchedule";
-import { Employee } from "@/@types/employee";
-import { Client } from "@/@types/client";
+import jwtDecode from "jwt-decode";
+import { getCookie } from "cookies-next";
+import { Token } from "@/@types/token";
 
 export default function Schedules() {
-  const accessToken = getCookie("@hairhub");
-  const decodedToken: Token = jwtDecode(accessToken as string);
-  const [scheduleToEdit, setcheduleToEdit] = useState<ScheduleOutputDTO>();
+  const [scheduleToEdit, setScheduleToEdit] = useState<ScheduleOutputDTO>();
   const [showModalSchedule, setShowModalSchedule] = useState(false);
 
+  const accessToken = getCookie("@hairhub");
+  const decodedToken: Token = jwtDecode(accessToken as string);
+
   const { data, isLoading } = useQuery(["clients"], {
-    queryFn: () => clientService.getClientById(decodedToken.sub as string),
+    queryFn: () => clientService.getClientById(decodedToken?.sub as string),
   });
 
   const handleOpenModalSchedule = (schedule?: ScheduleOutputDTO) => {
     if (schedule) {
-      setcheduleToEdit(schedule);
+      setScheduleToEdit(schedule);
     }
 
     setShowModalSchedule(true);
@@ -38,26 +36,31 @@ export default function Schedules() {
     setShowModalSchedule(false);
 
     if (scheduleToEdit) {
-      setcheduleToEdit(undefined);
+      setScheduleToEdit(undefined);
     }
   };
 
   return (
     <>
+      {/* <ModalSchedule
+        open={showModalSchedule}
+        scheduleToEdit={scheduleToEdit}
+        onClose={handleCloseModalSchedule}
+      /> */}
       <C.Container>
         <C.Content>
           <C.Title>Meus Agendamentos</C.Title>
           {isLoading ? (
             <SpinColor />
           ) : (
-            <C.MySchedulesConatainer>
+            <C.MySchedulesContainer>
               {data?.scheduling?.length !== undefined &&
               data.scheduling.length > 0 ? (
                 data.scheduling.map((schedule) => (
                   <MySchedulesCard
                     key={schedule.id as string}
                     schedule={schedule}
-                    // onEdit={handleOpenModalSchedule}
+                    onEdit={handleOpenModalSchedule}
                   />
                 ))
               ) : (
@@ -65,16 +68,11 @@ export default function Schedules() {
                   Nenhum agendamento encontrado.
                 </C.MessageScheduleNotFound>
               )}
-            </C.MySchedulesConatainer>
+            </C.MySchedulesContainer>
           )}
         </C.Content>
       </C.Container>
       <FooterClient />
-      {/* <ModalSchedule
-        open={showModalSchedule}
-        scheduleToEdit={scheduleToEdit as ScheduleOutputDTO}
-        onClose={handleCloseModalSchedule}
-      /> */}
     </>
   );
 }

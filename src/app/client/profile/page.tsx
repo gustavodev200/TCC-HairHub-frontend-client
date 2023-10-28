@@ -1,112 +1,181 @@
 "use client";
 
 import * as C from "./styles";
-import { Upload, Form, Input } from "antd";
-import {
-  MailOutlined,
-  LockOutlined,
-  LoadingOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 
-import { ErrorMessages } from "@/@types/messages";
-import { useState } from "react";
+import { IService, IServiceInputDTO } from "@/@types/service";
+import { serviceApi } from "@/services/service";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Form, Upload, Input } from "antd";
+import { useEffect, useState } from "react";
+
 import FooterClient from "../components/FooterClient";
+import { UploadButton } from "./components/UploadButton";
+import { Client } from "@/@types/client";
+import { clientService } from "@/services/client";
 
-export default function Profile() {
+interface ModalProps {
+  clientToEdit?: Client;
+  onClose: () => void;
+}
+
+export default function Profile({ clientToEdit, onClose }: ModalProps) {
   const [imageUrl, setImageUrl] = useState<string>();
   const [loading, setLoading] = useState(false);
 
-  const uploadButton = (
-    <div>
-      {loading ? (
-        <LoadingOutlined color="#fff" />
-      ) : (
-        <PlusOutlined color="#fff" />
-      )}
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
+  const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+
+  const { resetFields, setFieldsValue, validateFields } = form;
+
+  const editClient = useMutation({
+    mutationFn: (data: FormData) => clientService.editClient(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["clients"]);
+    },
+  });
+
+  const handleCancel = () => {
+    if (editClient.isLoading) {
+      return;
+    }
+
+    resetFields();
+    onClose();
+  };
+
+  const handleSubmit = () => {
+    validateFields()
+      .then((data) => {
+        const formData = new FormData();
+        formData.append("name", data.name);
+        formData.append("phone", data.phone);
+        formData.append("email", data.email);
+
+        if (data.image.file) {
+          formData.append("image", data.image.file?.originFileObj);
+        }
+
+        if (clientToEdit) {
+          formData.append("id", clientToEdit.id ?? "");
+          editClient
+            .mutateAsync(formData)
+            .then(() => {
+              handleCancel();
+            })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    if (clientToEdit) {
+      setFieldsValue({
+        name: clientToEdit.name,
+        phone: clientToEdit.phone,
+        email: clientToEdit.email,
+      });
+    }
+  }, [clientToEdit, setFieldsValue]);
+
   return (
     <>
       <C.Container>
         <C.Title>Meu Perfil</C.Title>
         <C.ProfileContainer>
-          <C.FormConatainer
-            name="basic"
-            layout="vertical"
-            // onFinish={onFinish}
-            // disabled={isLoading}
-            autoComplete="off"
-            size="large"
-          >
-            <Form.Item
-              label="Imagem perfil"
-              name="name"
-              rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
-              style={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
+          <C.FormContainer>
+            <C.FormContentWrapper
+              layout="vertical"
+              size="middle"
+              disabled={editClient.isLoading}
+              form={form}
+              initialValues={{
+                name: "",
+                phone: "",
+                email: "",
               }}
+              onFinish={handleSubmit}
             >
-              <Upload
-                name="avatar"
-                listType="picture-circle"
-                className="avatar-uploader"
-                showUploadList={false}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+              {/* <Form.Item label="Image" name="image" valuePropName="image">
+                <Upload
+                  name="image"
+                  listType="picture-card"
+                  maxCount={1}
+                  className="avatar-uploader"
+                >
+                  {clientToEdit?.image ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={clientToEdit?.image}
+                      alt="avatar"
+                      width={75}
+                      height={85}
+                    />
+                  ) : (
+                    <UploadButton isLoading={createService.isLoading} />
+                  )}
+                </Upload>
+              </Form.Item> */}
 
-                // beforeUpload={beforeUpload}
-                // onChange={handleChange}
+              <Form.Item
+                label="Nome"
+                name="name"
+                rules={[{ message: "Campo Obrigatório!" }]}
               >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ width: "100%" }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-            </Form.Item>
+                <Input
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="Nome"
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="Nome"
-              name="name"
-              rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
-            >
-              <Input
-                placeholder="Nome"
-                prefix={<MailOutlined style={{ color: "#9a9a9a" }} />}
-              />
-            </Form.Item>
+              <Form.Item
+                label="Telefone"
+                name="phone"
+                rules={[{ message: "Campo Obrigatório!" }]}
+              >
+                <Input
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="(99) 99999-9999"
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="Telefone"
-              name="phone"
-              rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
-            >
-              <C.InputContent
-                placeholder="Telephone"
-                prefix={<LockOutlined style={{ color: "#9a9a9a" }} />}
-              />
-            </Form.Item>
+              <Form.Item
+                label="Telefone"
+                name="email"
+                rules={[{ message: "Campo Obrigatório!" }]}
+              >
+                <Input
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="teste@teste.com"
+                />
+              </Form.Item>
 
-            <Form.Item
-              label="E-mail"
-              name="email"
-              rules={[{ required: true, message: ErrorMessages.MSGE01 }]}
-            >
-              <Input
-                placeholder="E-mail"
-                prefix={<MailOutlined style={{ color: "#9a9a9a" }} />}
-              />
-            </Form.Item>
+              {/* <Form.Item
+                label="Telefone"
+                name="phone"
+                rules={[{ message: "Campo Obrigatório!" }]}
+              >
+                <Input
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="(99) 99999-9999"
+                />
+              </Form.Item> */}
 
-            <Form.Item>
-              <C.ButtonSubmit type="primary" htmlType="submit">
-                ENTRAR
+              <C.ButtonSubmit
+                type="primary"
+                loading={editClient.isLoading}
+                size="large"
+                htmlType="submit"
+              >
+                ATUALIZAR
               </C.ButtonSubmit>
-            </Form.Item>
-          </C.FormConatainer>
+            </C.FormContentWrapper>
+          </C.FormContainer>
         </C.ProfileContainer>
       </C.Container>
       <FooterClient />

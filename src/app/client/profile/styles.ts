@@ -38,15 +38,22 @@ export const ButtonSubmit = styled(Button)`
   margin-top: 50px;
 `;
 
-export const FormConatainer = styled(Form)`
-  max-width: 50%;
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background-color: #181a21;
-  border-radius: 20px;
-  padding: 50px 20px;
+export const FormContainer = styled.div`
+  width: 50%;
+  padding: 20px 50px;
+  border-radius: 10px;
+  background-color: #0d0e12;
 
+  label {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+`;
+
+export const FormContentWrapper = styled(Form)`
   label {
     color: #fff !important;
   }

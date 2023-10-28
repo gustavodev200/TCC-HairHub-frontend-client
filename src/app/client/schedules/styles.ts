@@ -30,7 +30,7 @@ export const Title = styled.h2`
   margin: 20px 0;
 `;
 
-export const MySchedulesConatainer = styled.div`
+export const MySchedulesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -109,7 +109,6 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
           title="Menu"
           width={300}
           placement="right"
-          // onClick={onClose}
           onClose={onClose}
           open={visible}
         >
@@ -137,6 +136,7 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
             >
               Meu Perfil
             </Menu.Item>
+
             <Menu.Item key="5">
               <Button onClick={handleLogout} type="primary">
                 Sair

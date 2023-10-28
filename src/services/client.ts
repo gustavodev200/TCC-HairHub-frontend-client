@@ -62,7 +62,21 @@ async function resetPassword(id: string): Promise<Client> {
   ).then((res) => res.data);
 }
 
+async function editClient(data: FormData): Promise<Client> {
+  return Api.put(`${baseUrl}/${data.get("id")}`, data, {
+    headers: { authHeader: true, "success-message": SuccessMessages.MSGS02 },
+  }).then((res) => res.data);
+}
+
+async function getBarberDetails(id: string) {
+  return Api.get(`${baseUrl}/barber/${id}`, {
+    headers: { authHeader: true },
+  }).then((res) => res.data);
+}
+
 export const clientService = {
+  getBarberDetails,
+  editClient,
   getPaginated,
   getClientById,
   create,
