@@ -9,6 +9,7 @@ export const Container = styled.div`
   border-radius: 10px;
   padding: 20px;
   margin-bottom: 20px;
+  z-index: 1;
 
   @media (max-width: 1180px) {
     min-width: 100%;
@@ -225,4 +226,11 @@ export const ButtonStyle = styled(Button)`
     font-size: 14px;
     padding: 10px 20px;
   }
+`;
+
+export const ScheduleStatusFinished = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
 `;

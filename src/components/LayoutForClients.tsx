@@ -24,14 +24,14 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
 
   const handleLogout = () => {
     // Remove o cookie
-    deleteCookie("@hairhub");
+    deleteCookie("@hairhub:client");
 
     // Redireciona para a página de login ou qualquer outra página desejada
     router.push("/");
   };
 
   useEffect(() => {
-    const accessToken = getCookie("@hairhub");
+    const accessToken = getCookie("@hairhub:client");
 
     if (!accessToken) {
       router.push("/");

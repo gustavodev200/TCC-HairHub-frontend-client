@@ -33,6 +33,7 @@ import { Token } from "@/@types/token";
 
 import { Employee } from "@/@types/employee";
 import AvailableHoursBarber from "../AvailableHoursBarber";
+import { IService } from "@/@types/service";
 
 dayjs.extend(isBetween);
 
@@ -41,6 +42,7 @@ interface ModalProps {
   open: boolean;
   onClose: () => void;
   employeeInfo?: Employee;
+  serviceSelected?: IService;
 }
 
 export const ModalSchedule: React.FC<ModalProps> = ({
@@ -227,7 +229,7 @@ export const ModalSchedule: React.FC<ModalProps> = ({
   }, [serviceWatch, startDateTimeWatch]);
 
   useEffect(() => {
-    const accessToken = getCookie("@hairhub");
+    const accessToken = getCookie("@hairhub:client");
 
     if (!accessToken) {
       return;

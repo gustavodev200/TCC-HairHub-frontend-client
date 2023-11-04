@@ -1,21 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
-// Import Swiper React components
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 import "./styles.css";
 
-// import required modules
 import { Pagination, Navigation } from "swiper/modules";
 import { BarberCard } from "../BarberCard";
+import { CommentOutputDTO } from "@/@types/comments";
 
-const FeedbackClientsSlider = () => {
+export interface BarberCardProps {
+  comments: CommentOutputDTO[];
+}
+
+const FeedbackClientsSlider = (comments: BarberCardProps) => {
   return (
     <>
       <Swiper
@@ -39,18 +41,16 @@ const FeedbackClientsSlider = () => {
         modules={[Pagination, Navigation]}
         className="mySwiper"
       >
-        <SwiperSlide>
-          <BarberCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <BarberCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <BarberCard />
-        </SwiperSlide>
-        <SwiperSlide>
-          <BarberCard />
-        </SwiperSlide>
+        {comments.comments.length > 0 &&
+          comments.comments.map((items) => (
+            <SwiperSlide key={items.id}>
+              <BarberCard
+                client={items.client}
+                employee={items.employee}
+                content={items.content}
+              />
+            </SwiperSlide>
+          ))}
       </Swiper>
     </>
   );

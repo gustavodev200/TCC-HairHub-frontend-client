@@ -33,7 +33,7 @@ export default function LoginPageContent() {
     authService
       .login(email, password)
       .then((token) => {
-        setCookie("@hairhub", token, {
+        setCookie("@hairhub:client", token, {
           maxAge: 60 * 60 * 24 * 30,
           path: "/",
           secure: true,

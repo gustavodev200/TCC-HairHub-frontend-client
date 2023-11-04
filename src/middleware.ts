@@ -10,7 +10,7 @@ export const config = {
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  const accessToken = req.cookies.get("@hairhub");
+  const accessToken = req.cookies.get("@hairhub:client");
 
   if (!accessToken) {
     return NextResponse.redirect(new URL("/", req.url));

@@ -2,23 +2,34 @@
 
 import { Image } from "antd";
 import * as C from "./styles";
+import { CommentClientDTO, CommentEmployeeDTO } from "@/@types/comments";
+import { translateRole } from "@/helpers/utils/translateRoles";
+import { AssignmentType } from "@/@types/role";
 
-export const BarberCard = () => {
+export interface BarberCardProps {
+  content: string;
+  client: CommentClientDTO;
+  employee: CommentEmployeeDTO;
+}
+
+export const BarberCard = ({ client, employee, content }: BarberCardProps) => {
   return (
     <C.Container>
       <C.ContainerOne>
+        <C.AttendPerBarbeiroStyle>
+          <span>
+            Atendido por: <span>{employee.name}</span>
+          </span>
+        </C.AttendPerBarbeiroStyle>
         <div>
           <C.AspasContainer>
             <Image src="/images/aspa.svg" width={35} height={35} alt="Aspas" />
           </C.AspasContainer>
-          <C.FeedbackClient>
-            É um site bem completo e inteligente. Sistema MT bom para barbeiros
-            e para quem quer encontrar barbearias em qlqr lugar do Brasil
-          </C.FeedbackClient>
+          <C.FeedbackClient>{content}</C.FeedbackClient>
         </div>
         <C.ImageContent>
           <Image
-            src="https://i0.wp.com/www.canalmasculino.com.br/wp-content/uploads/2017/08/cortes-cabelo-masculinos-side-part-01-570x570.jpg?resize=570%2C570"
+            src="https://cdn-icons-png.flaticon.com/256/149/149071.png"
             width={60}
             height={60}
             alt="Logo Hair Hub Barbershop"
@@ -28,8 +39,10 @@ export const BarberCard = () => {
           />
 
           <C.InfoServiceContainer>
-            <C.BarberName>Rodrigo do corte</C.BarberName>
-            <C.SubtitleProfile>Barbeiro</C.SubtitleProfile>
+            <C.BarberName>{client.name}</C.BarberName>
+            <C.SubtitleProfile>
+              {translateRole(client.role as AssignmentType)}
+            </C.SubtitleProfile>
           </C.InfoServiceContainer>
         </C.ImageContent>
       </C.ContainerOne>

@@ -51,6 +51,7 @@ export default function Profile({ clientToEdit, onClose }: ModalProps) {
         formData.append("name", data.name);
         formData.append("phone", data.phone);
         formData.append("email", data.email);
+        formData.append("password", data.password);
 
         if (data.image.file) {
           formData.append("image", data.image.file?.originFileObj);
@@ -154,17 +155,47 @@ export default function Profile({ clientToEdit, onClose }: ModalProps) {
                 />
               </Form.Item>
 
-              {/* <Form.Item
-                label="Telefone"
+              <Form.Item
+                required
+                label="Senha Atual"
                 name="phone"
                 rules={[{ message: "Campo Obrigatório!" }]}
               >
                 <Input
+                  type="password"
                   size="large"
                   // prefix={<ScissorOutlined />}
-                  placeholder="(99) 99999-9999"
+                  placeholder="Digite a senha atual"
                 />
-              </Form.Item> */}
+              </Form.Item>
+
+              <Form.Item
+                required
+                label="Nova senha"
+                name="phone"
+                rules={[{ message: "Campo Obrigatório!" }]}
+              >
+                <Input
+                  type="password"
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="Digite uma nova password"
+                />
+              </Form.Item>
+
+              <Form.Item
+                required
+                label="Confirmar nova senha"
+                name="phone"
+                rules={[{ message: "Campo Obrigatório!" }]}
+              >
+                <Input
+                  type="password"
+                  size="large"
+                  // prefix={<ScissorOutlined />}
+                  placeholder="Confirmar nova senha"
+                />
+              </Form.Item>
 
               <C.ButtonSubmit
                 type="primary"

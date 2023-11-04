@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Button, Image, Space } from "antd";
+import { Image, Tag } from "antd";
+import { FileDoneOutlined } from "@ant-design/icons";
 import * as C from "./styles";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import { ScheduleOutputDTO } from "@/@types/schedules";
 import { changeFormatData } from "@/helpers/utils/changeFormatData";
 import { changeFormatHour } from "@/helpers/utils/changeFormatHour";
-import { ModalSchedule } from "../ModalSchedule";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { scheduleService } from "@/services/schedule";
+import { CommentOutputDTO } from "@/@types/comments";
+import { useState } from "react";
+import { CommentModal } from "../CommentModal";
 
 export const MySchedulesCard = ({
   schedule,
@@ -19,6 +21,38 @@ export const MySchedulesCard = ({
   onEdit: (schedule: ScheduleOutputDTO) => void;
 }) => {
   const queryClient = useQueryClient();
+  const [commentToEdit, setCommentToEdit] = useState<CommentOutputDTO>();
+  const [showModalComment, setShowModalComment] = useState(false);
+  const [selectedCommentScheduleById, setSelectedCommentScheduleById] =
+    useState<string>();
+
+  const { data } = useQuery({
+    queryKey: ["schedulings"],
+    queryFn: () => scheduleService.getPaginated(),
+  });
+
+  const handleOpenModalComment = (comment?: CommentOutputDTO) => {
+    if (comment) {
+      setCommentToEdit(comment);
+    }
+
+    setShowModalComment(true);
+  };
+
+  const handleOpenModalScheduleComment = (id?: string) => {
+    if (id) {
+      setSelectedCommentScheduleById(id);
+    }
+
+    setShowModalComment(true);
+  };
+
+  const handleCloseModalComment = () => {
+    setShowModalComment(false);
+    if (commentToEdit) {
+      setCommentToEdit(undefined);
+    }
+  };
 
   const changeStatus = useMutation({
     mutationFn: (params: any) =>
@@ -75,38 +109,71 @@ export const MySchedulesCard = ({
           </C.ContentTwoCard>
         ))}
 
-        <C.ButtonContent>
-          <C.ButtonStyle
-            onClick={() => onEdit(schedule)}
-            type="primary"
-            color="#c1820b"
-          >
-            EDITAR
-          </C.ButtonStyle>
-
-          {schedule.schedule_status === "scheduled" ? (
+        {schedule.schedule_status !== "finished" ? (
+          <C.ButtonContent>
             <C.ButtonStyle
-              loading={changeStatus.isLoading}
+              onClick={() => onEdit(schedule)}
               type="primary"
-              color="#3498DB"
+              color="#c1820b"
+            >
+              EDITAR
+            </C.ButtonStyle>
+
+            {schedule.schedule_status === "scheduled" ? (
+              <C.ButtonStyle
+                loading={changeStatus.isLoading}
+                type="primary"
+                color="#3498DB"
+                onClick={() =>
+                  changeStatus.mutate({
+                    id: schedule.id as string,
+                    schedule_status:
+                      schedule.schedule_status === "scheduled"
+                        ? "confirmed"
+                        : null,
+                  })
+                }
+              >
+                CONFIRMAR
+              </C.ButtonStyle>
+            ) : null}
+            <C.ButtonStyle
+              type="primary"
+              color="#E74C3C"
               onClick={() =>
                 changeStatus.mutate({
-                  id: schedule.id as string,
-                  schedule_status:
-                    schedule.schedule_status === "scheduled"
-                      ? "confirmed"
-                      : null,
+                  id: schedule.id,
+                  schedule_status: "canceled",
                 })
               }
             >
-              CONFIRMAR
+              CANCELAR
             </C.ButtonStyle>
-          ) : null}
-          <C.ButtonStyle type="primary" color="#E74C3C">
-            CANCELAR
-          </C.ButtonStyle>
-        </C.ButtonContent>
+          </C.ButtonContent>
+        ) : (
+          <C.ScheduleStatusFinished>
+            <C.ButtonStyle
+              type="primary"
+              color="#782ecc"
+              onClick={() => handleOpenModalScheduleComment(schedule.id)}
+            >
+              AVALIAR
+            </C.ButtonStyle>
+            <Tag color="#2ECC71">
+              <FileDoneOutlined /> FINALIZADO
+            </Tag>
+          </C.ScheduleStatusFinished>
+        )}
       </C.Container>
+
+      <CommentModal
+        open={showModalComment}
+        commentToEdit={commentToEdit}
+        onClose={handleCloseModalComment}
+        selectedCommentScheduleById={data?.data.find(
+          (comment) => comment.id === selectedCommentScheduleById
+        )}
+      />
     </>
   );
 };

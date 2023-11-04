@@ -56,6 +56,7 @@ export const FeedbackClient = styled.p`
   font-style: italic;
   display: flex;
   align-items: flex-start;
+  /* text-align: left; */
 `;
 
 export const AspasContainer = styled.div`
@@ -76,4 +77,17 @@ export const SubtitleProfile = styled.span`
   margin-left: 10px;
   display: flex;
   align-items: flex-start;
+`;
+
+export const AttendPerBarbeiroStyle = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+  width: 100%;
+
+  span {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+  }
 `;

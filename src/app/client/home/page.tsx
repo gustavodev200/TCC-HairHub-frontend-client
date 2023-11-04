@@ -13,14 +13,15 @@ import { ScheduleOutputDTO } from "@/@types/schedules";
 import { ModalSchedule } from "../components/ModalSchedule";
 import { useState } from "react";
 import { employeeService } from "@/services/employee";
+import { commentService } from "@/services/comments";
+import { CommentOutputDTO } from "@/@types/comments";
 
 export default function Home() {
   const queryClient = useQueryClient();
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string>();
   const [scheduleToEdit, setcheduleToEdit] = useState<ScheduleOutputDTO>();
   const [showModalSchedule, setShowModalSchedule] = useState(false);
-  const [selectedConsumeScheduleId, setSelectedConsumeScheduleId] =
-    useState<string>();
+  const [selectedServiceById, setSelectedServiceById] = useState<string>();
   const [showModalConsumeSchedule, setShowModalConsumeSchedule] =
     useState(false);
 
@@ -35,22 +36,31 @@ export default function Home() {
     }
   );
 
-  const handleOpenModalSchedule = (schedule?: ScheduleOutputDTO) => {
-    if (schedule) {
-      setcheduleToEdit(schedule);
+  const { data: dataComments, isLoading: isLoadingComments } = useQuery(
+    ["comments"],
+    {
+      queryFn: () => commentService.getComments(),
+
+      enabled: !!dataEmployee,
     }
+  );
 
-    setShowModalSchedule(true);
-  };
+  // const handleOpenModalSchedule = (schedule?: ScheduleOutputDTO) => {
+  //   if (schedule) {
+  //     setcheduleToEdit(schedule);
+  //   }
 
-  const handleOpenModalScheduleService = (id?: string) => {
-    if (id) {
-      setSelectedConsumeScheduleId(id);
-      setSelectedEmployeeId(id);
-    }
+  //   setShowModalSchedule(true);
+  // };
 
-    setShowModalConsumeSchedule(true);
-  };
+  // const handleOpenModalScheduleService = (id?: string) => {
+  //   if (id) {
+  //     setSelectedServiceById(id);
+  //     setSelectedEmployeeId(id);
+  //   }
+
+  //   setShowModalConsumeSchedule(true);
+  // };
 
   const handleCloseModalSchedule = () => {
     setShowModalSchedule(false), setShowModalConsumeSchedule(false);
@@ -68,6 +78,9 @@ export default function Home() {
         onClose={handleCloseModalSchedule}
         employeeInfo={dataEmployee?.find(
           (employee) => employee.id === selectedEmployeeId
+        )}
+        serviceSelected={data?.find(
+          (service) => service.id === selectedServiceById
         )}
       />
       <C.Container>
@@ -96,7 +109,9 @@ export default function Home() {
           <div>
             <C.TitleTopicsPage>Nossos Clientes</C.TitleTopicsPage>
             <C.BarberSelectedConatainer>
-              <FeedbackClientsSlider />
+              {dataComments?.map((comment) => (
+                <FeedbackClientsSlider key={comment.id} comments={[comment]} />
+              ))}
             </C.BarberSelectedConatainer>
           </div>
         </C.SelectedServiceContainer>

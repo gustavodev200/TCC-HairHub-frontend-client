@@ -7,7 +7,7 @@ export const authInterceptor = async (config: InternalAxiosRequestConfig) => {
 
   if (needsToAuth) {
     try {
-      const accessToken = getCookie("@hairhub");
+      const accessToken = getCookie("@hairhub:client");
 
       if (!accessToken) throw new Error(ErrorMessages.MSGE12);
 
@@ -21,7 +21,7 @@ export const authInterceptor = async (config: InternalAxiosRequestConfig) => {
 
       return newConfig;
     } catch {
-      deleteCookie("@hairhub");
+      deleteCookie("@hairhub:client");
     }
   }
 
