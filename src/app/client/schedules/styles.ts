@@ -8,12 +8,12 @@ export const Container = styled.div`
 
   @media (max-width: 1750px) {
     padding: 85px 32px;
-    height: 100vh;
+    height: 100%;
   }
 
   @media (max-width: 568px) {
     padding: 85px 8px;
-    height: 100vh;
+    height: 100%;
   }
 `;
 

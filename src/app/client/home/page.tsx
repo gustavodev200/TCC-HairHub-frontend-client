@@ -109,9 +109,9 @@ export default function Home() {
           <div>
             <C.TitleTopicsPage>Nossos Clientes</C.TitleTopicsPage>
             <C.BarberSelectedConatainer>
-              {dataComments?.map((comment) => (
-                <FeedbackClientsSlider key={comment.id} comments={[comment]} />
-              ))}
+              <FeedbackClientsSlider
+                comments={dataComments as CommentOutputDTO[]}
+              />
             </C.BarberSelectedConatainer>
           </div>
         </C.SelectedServiceContainer>

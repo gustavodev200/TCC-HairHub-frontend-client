@@ -5,6 +5,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   min-width: 30%;
+  height: 35vh;
   border-radius: 10px;
   padding: 35px 20px;
   margin-bottom: 20px;
@@ -16,7 +17,7 @@ export const Container = styled.div`
   }
 
   @media (max-width: 1180px) {
-    min-width: 100%;
+    width: 100%;
   }
 `;
 
