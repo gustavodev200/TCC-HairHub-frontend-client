@@ -47,6 +47,7 @@ const FeedbackClientsSlider = (comments: BarberCardProps) => {
               client={items.client}
               employee={items.employee}
               content={items.content}
+              star={items.star}
             />
           </SwiperSlide>
         ))}

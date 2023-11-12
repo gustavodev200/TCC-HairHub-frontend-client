@@ -234,3 +234,30 @@ export const ScheduleStatusFinished = styled.div`
   justify-content: flex-end;
   gap: 10px;
 `;
+
+export const FinishedScheduleCard = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #76ffb0;
+`;
+
+export const PaymentTotalContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+  }
+`;
+
+export const ContainerActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`;

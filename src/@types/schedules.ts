@@ -31,6 +31,9 @@ export interface ScheduleOutputDTO extends ScheduleInputDTO {
   estimated_time?: number;
   created_at: Date;
   updated_at?: Date;
+  consumption: {
+    total_amount: number;
+  };
 }
 
 export interface SchedulesUpdateParamsDTO {

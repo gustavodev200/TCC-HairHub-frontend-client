@@ -12,9 +12,6 @@ import { ModalSchedule } from "../components/ModalSchedule";
 import jwtDecode from "jwt-decode";
 import { getCookie } from "cookies-next";
 import { Token } from "@/@types/token";
-import { CommentModal } from "../components/CommentModal";
-import { CommentOutputDTO } from "@/@types/comments";
-import { Client } from "@/@types/client";
 
 export default function Schedules() {
   const [scheduleToEdit, setScheduleToEdit] = useState<ScheduleOutputDTO>();

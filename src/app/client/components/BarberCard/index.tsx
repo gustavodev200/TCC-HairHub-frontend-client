@@ -5,20 +5,30 @@ import * as C from "./styles";
 import { CommentClientDTO, CommentEmployeeDTO } from "@/@types/comments";
 import { translateRole } from "@/helpers/utils/translateRoles";
 import { AssignmentType } from "@/@types/role";
+import { formatName } from "@/helpers/utils/formatName";
+import { Rate } from "antd/lib";
 
 export interface BarberCardProps {
   content: string;
   client: CommentClientDTO;
   employee: CommentEmployeeDTO;
+  star: number;
 }
 
-export const BarberCard = ({ client, employee, content }: BarberCardProps) => {
+export const BarberCard = ({
+  client,
+  employee,
+  content,
+  star,
+}: BarberCardProps) => {
   return (
     <C.Container>
       <C.ContainerOne>
         <C.AttendPerBarbeiroStyle>
+          <Rate disabled defaultValue={star} />
+
           <span>
-            Atendido por: <span>{employee.name}</span>
+            Atendido por: <span>{formatName(employee.name)}</span>
           </span>
         </C.AttendPerBarbeiroStyle>
         <div>
@@ -39,7 +49,7 @@ export const BarberCard = ({ client, employee, content }: BarberCardProps) => {
           />
 
           <C.InfoServiceContainer>
-            <C.BarberName>{client.name}</C.BarberName>
+            <C.BarberName>{formatName(client.name)}</C.BarberName>
             <C.SubtitleProfile>
               {translateRole(client.role as AssignmentType)}
             </C.SubtitleProfile>

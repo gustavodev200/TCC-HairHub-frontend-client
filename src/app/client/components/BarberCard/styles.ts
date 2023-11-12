@@ -5,7 +5,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   min-width: 30%;
-  height: 35vh;
+  min-height: 100%;
   border-radius: 10px;
   padding: 35px 20px;
   margin-bottom: 20px;
@@ -83,11 +83,15 @@ export const SubtitleProfile = styled.span`
 export const AttendPerBarbeiroStyle = styled.div`
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: space-between;
   margin-bottom: 1rem;
   width: 100%;
 
-  span {
+  span:nth-child(1) {
+    font-size: 16px;
+  }
+
+  span:nth-child(2) {
     color: rgba(255, 255, 255, 0.3);
     font-size: 14px;
   }

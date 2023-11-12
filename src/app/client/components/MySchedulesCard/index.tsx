@@ -1,7 +1,7 @@
 "use client";
 
 import { Image, Tag } from "antd";
-import { FileDoneOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import * as C from "./styles";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import { ScheduleOutputDTO } from "@/@types/schedules";
@@ -109,61 +109,75 @@ export const MySchedulesCard = ({
           </C.ContentTwoCard>
         ))}
 
-        {schedule.schedule_status !== "finished" ? (
-          <C.ButtonContent>
-            <C.ButtonStyle
-              onClick={() => onEdit(schedule)}
-              type="primary"
-              color="#c1820b"
-            >
-              EDITAR
-            </C.ButtonStyle>
+        <C.ContainerActions>
+          {/* {schedule?.consumption?.total_amount !== 0 ||
+          schedule?.consumption?.total_amount !== null ||
+          schedule?.consumption?.total_amount !== undefined ? (
+            <C.PaymentTotalContainer>
+              <span>Valor Total:</span>
 
-            {schedule.schedule_status === "scheduled" ? (
+              <span>
+                {formatCurrency(schedule?.consumption?.total_amount as number)}
+              </span>
+            </C.PaymentTotalContainer>
+          ) : null} */}
+
+          {schedule.schedule_status !== "finished" ? (
+            <C.ButtonContent>
               <C.ButtonStyle
-                loading={changeStatus.isLoading}
+                onClick={() => onEdit(schedule)}
                 type="primary"
-                color="#3498DB"
+                color="#c1820b"
+              >
+                EDITAR
+              </C.ButtonStyle>
+
+              {schedule.schedule_status === "scheduled" ? (
+                <C.ButtonStyle
+                  loading={changeStatus.isLoading}
+                  type="primary"
+                  color="#3498DB"
+                  onClick={() =>
+                    changeStatus.mutate({
+                      id: schedule.id as string,
+                      schedule_status:
+                        schedule.schedule_status === "scheduled"
+                          ? "confirmed"
+                          : null,
+                    })
+                  }
+                >
+                  CONFIRMAR
+                </C.ButtonStyle>
+              ) : null}
+              <C.ButtonStyle
+                type="primary"
+                color="#E74C3C"
                 onClick={() =>
                   changeStatus.mutate({
-                    id: schedule.id as string,
-                    schedule_status:
-                      schedule.schedule_status === "scheduled"
-                        ? "confirmed"
-                        : null,
+                    id: schedule.id,
+                    schedule_status: "canceled",
                   })
                 }
               >
-                CONFIRMAR
+                CANCELAR
               </C.ButtonStyle>
-            ) : null}
-            <C.ButtonStyle
-              type="primary"
-              color="#E74C3C"
-              onClick={() =>
-                changeStatus.mutate({
-                  id: schedule.id,
-                  schedule_status: "canceled",
-                })
-              }
-            >
-              CANCELAR
-            </C.ButtonStyle>
-          </C.ButtonContent>
-        ) : (
-          <C.ScheduleStatusFinished>
-            <C.ButtonStyle
-              type="primary"
-              color="#782ecc"
-              onClick={() => handleOpenModalScheduleComment(schedule.id)}
-            >
-              AVALIAR
-            </C.ButtonStyle>
-            <Tag color="#2ECC71">
-              <FileDoneOutlined /> FINALIZADO
-            </Tag>
-          </C.ScheduleStatusFinished>
-        )}
+            </C.ButtonContent>
+          ) : (
+            <C.ScheduleStatusFinished>
+              <C.ButtonStyle
+                type="primary"
+                color="#782ecc"
+                onClick={() => handleOpenModalScheduleComment(schedule.id)}
+              >
+                AVALIAR
+              </C.ButtonStyle>
+              <C.FinishedScheduleCard>
+                <CheckCircleOutlined /> FINALIZADO
+              </C.FinishedScheduleCard>
+            </C.ScheduleStatusFinished>
+          )}
+        </C.ContainerActions>
       </C.Container>
 
       <CommentModal

@@ -8,6 +8,7 @@ import { clientService } from "@/services/client";
 import { commentService } from "@/services/comments";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button, Form, Modal, Input, Select } from "antd";
+import { Rate } from "antd/lib";
 import { getCookie } from "cookies-next";
 import jwtDecode from "jwt-decode";
 import { useEffect, useState } from "react";
@@ -151,6 +152,15 @@ export const CommentModal: React.FC<ModalProps> = ({
             name: "",
           }}
         >
+          <Form.Item
+            required
+            label="Avaliar"
+            name="star"
+            rules={[{ required: true, message: "Campo Obrigatório!" }]}
+          >
+            <Rate />
+          </Form.Item>
+
           <Form.Item
             required
             label="Comentário"
