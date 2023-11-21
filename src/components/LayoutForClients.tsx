@@ -86,15 +86,15 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               >
                 Agendamentos
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
                 key="4"
                 icon={<SettingOutlined />}
                 onClick={() => router.push("/client/profile")}
               >
                 Meu Perfil
-              </Menu.Item>
+              </Menu.Item> */}
 
-              <Menu.Item key="5">
+              <Menu.Item key="4">
                 <Button onClick={handleLogout}>Sair</Button>
               </Menu.Item>
             </Menu>
@@ -129,15 +129,15 @@ const LayoutForClients = ({ children }: { children: ReactNode }) => {
               Agendamentos
             </Menu.Item>
 
-            <Menu.Item
+            {/* <Menu.Item
               key="4"
               icon={<SettingOutlined />}
               onClick={() => router.push("/client/profile")}
             >
               Meu Perfil
-            </Menu.Item>
+            </Menu.Item> */}
 
-            <Menu.Item key="5">
+            <Menu.Item key="4">
               <Button onClick={handleLogout} type="primary">
                 Sair
               </Button>

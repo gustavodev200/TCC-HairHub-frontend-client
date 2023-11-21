@@ -34,38 +34,38 @@ export default function ImageSlider() {
       >
         <SwiperSlide>
           <ImageSwiper
-            src="https://heygoldie.com/blog/wp-content/uploads/2021/12/barber-shop-decor-ideas.jpg"
+            src="https://crisaita.com.br/wp-content/uploads/2018/10/barbearia_nova_antiga.jpg"
             alt="Slide 1"
           />
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://dudubarber.com.br/wp-content/uploads/2023/02/vintage-chairs-in-barbershop.jpg"
+          <ImageSwiper
+            src="https://clubmensalon.com.br/wp-content/uploads/2023/05/eaae141d-dd9a-4799-88e4-8cb2ba408502.jpg"
             alt="Slide 1"
           />
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://images.squarespace-cdn.com/content/v1/5ae7a6e2e2ccd1343b0b1878/1647887765067-YYK19UXH3LH6OZFJ8Y5I/DSC08193.jpg?format=2500w"
+          <ImageSwiper
+            src="https://ae01.alicdn.com/kf/HTB141GymDJYBeNjy1zeq6yhzVXaF/Personalizado-vintage-papel-de-parede-barbeiro-elementos-para-a-parede-da-barbearia-sof-sala-estar.jpg"
             alt="Slide 1"
           />
         </SwiperSlide>
         <SwiperSlide>
-          <img
-            src="https://www.shutterstock.com/shutterstock/photos/2309847913/display_1500/stock-photo-portrait-of-smiling-bearded-caucasian-male-hairdresser-with-hair-bun-in-black-apron-at-hair-salon-2309847913.jpg"
+          <ImageSwiper
+            src="https://d2zdpiztbgorvt.cloudfront.net/region1/br/151527/biz_photo/1920b716134f406d8f22a74c9a9435-o-marquez-barbearia-biz-photo-b816a631794149f6b3c34373b4f153-booksy.jpeg"
             alt="Slide 1"
           />
         </SwiperSlide>
         <SwiperSlide>
-          <img
+          <ImageSwiper
             src="https://www.wineenthusiast.com/wp-content/uploads/2022/09/HERO_Barbershop_Cuts_and_Cocktails_Credit_David_J_Crewe_1920x1280.jpg"
             alt="Slide 1"
           />
         </SwiperSlide>
 
         <SwiperSlide>
-          <img
-            src="https://mercafefaststore.vtexassets.com/assets/vtex.file-manager-graphql/images/1c3efb13-7168-4371-95e2-9be1390bef4b___b4fe059689c4e7cd10e18e39aa88df9d.jpg"
+          <ImageSwiper
+            src="https://potricharquitetura.com/wp-content/uploads/Adailton_Barbearia_HD_09-1.jpg"
             alt="Slide 1"
           />
         </SwiperSlide>
