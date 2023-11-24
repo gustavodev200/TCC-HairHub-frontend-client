@@ -66,15 +66,13 @@ export default function Schedules() {
               <C.MySchedulesContainer>
                 {data?.scheduling?.length !== undefined &&
                 data.scheduling.length > 0 ? (
-                  data.scheduling.map((schedule) =>
-                    schedule.schedule_status !== "canceled" ? (
-                      <MySchedulesCard
-                        key={schedule.id as string}
-                        schedule={schedule}
-                        onEdit={handleOpenModalSchedule}
-                      />
-                    ) : null
-                  )
+                  data.scheduling.map((schedule) => (
+                    <MySchedulesCard
+                      key={schedule.id as string}
+                      schedule={schedule}
+                      onEdit={handleOpenModalSchedule}
+                    />
+                  ))
                 ) : (
                   <C.MessageScheduleNotFound>
                     Nenhum agendamento encontrado.

@@ -243,6 +243,16 @@ export const FinishedScheduleCard = styled.span`
   color: #76ffb0;
 `;
 
+export const CanceledScheduleCard = styled.span`
+  width: 100%;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  color: #ec7063;
+`;
+
 export const PaymentTotalContainer = styled.div`
   display: flex;
   align-items: center;

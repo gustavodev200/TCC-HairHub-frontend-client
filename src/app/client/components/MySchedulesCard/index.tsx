@@ -1,7 +1,7 @@
 "use client";
 
-import { Image, Tag } from "antd";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { Image } from "antd";
+import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
 import * as C from "./styles";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import { ScheduleOutputDTO } from "@/@types/schedules";
@@ -12,6 +12,7 @@ import { scheduleService } from "@/services/schedule";
 import { CommentOutputDTO } from "@/@types/comments";
 import { useState } from "react";
 import { CommentModal } from "../CommentModal";
+import { trace } from "console";
 
 export const MySchedulesCard = ({
   schedule,
@@ -122,59 +123,77 @@ export const MySchedulesCard = ({
             </C.PaymentTotalContainer>
           ) : null} */}
 
-          {schedule.schedule_status !== "finished" ? (
-            <C.ButtonContent>
-              <C.ButtonStyle
-                onClick={() => onEdit(schedule)}
-                type="primary"
-                color="#c1820b"
-              >
-                EDITAR
-              </C.ButtonStyle>
+          {schedule.schedule_status !== "canceled" ? (
+            <>
+              {schedule.schedule_status !== "finished" ? (
+                <C.ButtonContent>
+                  <C.ButtonStyle
+                    onClick={() => onEdit(schedule)}
+                    type="primary"
+                    color="#c1820b"
+                  >
+                    EDITAR
+                  </C.ButtonStyle>
 
-              {schedule.schedule_status === "scheduled" ? (
-                <C.ButtonStyle
-                  loading={changeStatus.isLoading}
-                  type="primary"
-                  color="#3498DB"
-                  onClick={() =>
-                    changeStatus.mutate({
-                      id: schedule.id as string,
-                      schedule_status:
-                        schedule.schedule_status === "scheduled"
-                          ? "confirmed"
-                          : null,
-                    })
-                  }
-                >
-                  CONFIRMAR
-                </C.ButtonStyle>
-              ) : null}
-              <C.ButtonStyle
-                type="primary"
-                color="#E74C3C"
-                onClick={() =>
-                  changeStatus.mutate({
-                    id: schedule.id,
-                    schedule_status: "canceled",
-                  })
-                }
-              >
-                CANCELAR
-              </C.ButtonStyle>
-            </C.ButtonContent>
+                  {schedule.schedule_status === "scheduled" ? (
+                    <C.ButtonStyle
+                      loading={changeStatus.isLoading}
+                      type="primary"
+                      color="#3498DB"
+                      onClick={() =>
+                        changeStatus.mutate({
+                          id: schedule.id as string,
+                          schedule_status:
+                            schedule.schedule_status === "scheduled"
+                              ? "confirmed"
+                              : null,
+                        })
+                      }
+                    >
+                      CONFIRMAR
+                    </C.ButtonStyle>
+                  ) : null}
+
+                  <C.ButtonStyle
+                    type="primary"
+                    color="#E74C3C"
+                    onClick={() =>
+                      changeStatus.mutate({
+                        id: schedule.id,
+                        schedule_status: "canceled",
+                      })
+                    }
+                  >
+                    CANCELAR
+                  </C.ButtonStyle>
+                </C.ButtonContent>
+              ) : (
+                <C.ScheduleStatusFinished>
+                  <C.ButtonStyle
+                    type="primary"
+                    color="#782ecc"
+                    onClick={() => handleOpenModalScheduleComment(schedule.id)}
+                  >
+                    AVALIAR
+                  </C.ButtonStyle>
+                  <C.FinishedScheduleCard>
+                    <CheckCircleOutlined /> FINALIZADO
+                  </C.FinishedScheduleCard>
+                </C.ScheduleStatusFinished>
+              )}
+            </>
           ) : (
             <C.ScheduleStatusFinished>
-              <C.ButtonStyle
-                type="primary"
-                color="#782ecc"
-                onClick={() => handleOpenModalScheduleComment(schedule.id)}
-              >
-                AVALIAR
-              </C.ButtonStyle>
-              <C.FinishedScheduleCard>
-                <CheckCircleOutlined /> FINALIZADO
-              </C.FinishedScheduleCard>
+              {/* <C.ButtonStyle
+                style={{
+                  padding: "0px",
+                  border: "none",
+                  visibility: "hidden",
+                }}
+              ></C.ButtonStyle> */}
+              <C.CanceledScheduleCard>
+                <StopOutlined /> CANCELADO
+              </C.CanceledScheduleCard>
             </C.ScheduleStatusFinished>
           )}
         </C.ContainerActions>
