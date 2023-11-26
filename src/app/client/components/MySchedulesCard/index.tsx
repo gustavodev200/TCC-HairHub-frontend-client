@@ -1,7 +1,11 @@
 "use client";
 
 import { Image } from "antd";
-import { CheckCircleOutlined, StopOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  StopOutlined,
+  LikeOutlined,
+} from "@ant-design/icons";
 import * as C from "./styles";
 import { formatCurrency } from "@/helpers/utils/formatCurrency";
 import { ScheduleOutputDTO } from "@/@types/schedules";
@@ -13,6 +17,7 @@ import { CommentOutputDTO } from "@/@types/comments";
 import { useState } from "react";
 import { CommentModal } from "../CommentModal";
 import { trace } from "console";
+import { ScheduleStatus } from "@/@types/scheduleStatus";
 
 export const MySchedulesCard = ({
   schedule,
@@ -111,31 +116,26 @@ export const MySchedulesCard = ({
         ))}
 
         <C.ContainerActions>
-          {/* {schedule?.consumption?.total_amount !== 0 ||
-          schedule?.consumption?.total_amount !== null ||
-          schedule?.consumption?.total_amount !== undefined ? (
-            <C.PaymentTotalContainer>
-              <span>Valor Total:</span>
-
-              <span>
-                {formatCurrency(schedule?.consumption?.total_amount as number)}
-              </span>
-            </C.PaymentTotalContainer>
-          ) : null} */}
-
-          {schedule.schedule_status !== "canceled" ? (
+          {schedule.schedule_status === ScheduleStatus.CONFIRMED && (
+            <C.ConfirmedScheduleCard>
+              <LikeOutlined /> CONFIRMADO
+            </C.ConfirmedScheduleCard>
+          )}
+          {schedule.schedule_status !== ScheduleStatus.CANCELED ? (
             <>
-              {schedule.schedule_status !== "finished" ? (
+              {schedule.schedule_status !== ScheduleStatus.FINISHED ? (
                 <C.ButtonContent>
-                  <C.ButtonStyle
-                    onClick={() => onEdit(schedule)}
-                    type="primary"
-                    color="#c1820b"
-                  >
-                    EDITAR
-                  </C.ButtonStyle>
+                  {schedule.schedule_status !== ScheduleStatus.CONFIRMED && (
+                    <C.ButtonStyle
+                      onClick={() => onEdit(schedule)}
+                      type="primary"
+                      color="#c1820b"
+                    >
+                      EDITAR
+                    </C.ButtonStyle>
+                  )}
 
-                  {schedule.schedule_status === "scheduled" ? (
+                  {schedule.schedule_status === ScheduleStatus.SCHEDULED && (
                     <C.ButtonStyle
                       loading={changeStatus.isLoading}
                       type="primary"
@@ -143,29 +143,28 @@ export const MySchedulesCard = ({
                       onClick={() =>
                         changeStatus.mutate({
                           id: schedule.id as string,
-                          schedule_status:
-                            schedule.schedule_status === "scheduled"
-                              ? "confirmed"
-                              : null,
+                          schedule_status: ScheduleStatus.CONFIRMED,
                         })
                       }
                     >
                       CONFIRMAR
                     </C.ButtonStyle>
-                  ) : null}
+                  )}
 
-                  <C.ButtonStyle
-                    type="primary"
-                    color="#E74C3C"
-                    onClick={() =>
-                      changeStatus.mutate({
-                        id: schedule.id,
-                        schedule_status: "canceled",
-                      })
-                    }
-                  >
-                    CANCELAR
-                  </C.ButtonStyle>
+                  {schedule.schedule_status !== ScheduleStatus.CONFIRMED && (
+                    <C.ButtonStyle
+                      type="primary"
+                      color="#E74C3C"
+                      onClick={() =>
+                        changeStatus.mutate({
+                          id: schedule.id,
+                          schedule_status: ScheduleStatus.CANCELED,
+                        })
+                      }
+                    >
+                      CANCELAR
+                    </C.ButtonStyle>
+                  )}
                 </C.ButtonContent>
               ) : (
                 <C.ScheduleStatusFinished>
@@ -184,13 +183,6 @@ export const MySchedulesCard = ({
             </>
           ) : (
             <C.ScheduleStatusFinished>
-              {/* <C.ButtonStyle
-                style={{
-                  padding: "0px",
-                  border: "none",
-                  visibility: "hidden",
-                }}
-              ></C.ButtonStyle> */}
               <C.CanceledScheduleCard>
                 <StopOutlined /> CANCELADO
               </C.CanceledScheduleCard>
